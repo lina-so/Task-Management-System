@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateUserRequest;
 
 class UserController extends Controller
 {
@@ -58,7 +59,7 @@ class UserController extends Controller
     }
     /*******************************************************************************************************************/
 
-    public function update(UserRequest $request, int $id)
+    public function update(UpdateUserRequest $request, int $id)
     {
         $validated=$request->validated();
 

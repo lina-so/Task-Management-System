@@ -297,18 +297,6 @@
                                             </select>
                                         </div>
 
-{{--
-                                        <div class="form-group">
-                                            <label > tags </label>
-                                            <select class="custom-select my-1 mr-sm-2" name="tag_id[]">
-                                                <option selected disabled>choose...</option>
-                                                @foreach($tags as $tag)
-                                                    <option style="tag: black" value="{{$tag->id}}">{{$tag->name}}</option>
-                                                @endforeach
-                                            </select>
-
-                                        </div> --}}
-
 									</div>
 
 

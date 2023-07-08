@@ -22,6 +22,7 @@ Route::resource('user', UserController::class);
 /**************************************  tasks  *****************************************************/
 Route::resource('task',TaskController::class);
 
+
 /**************************************  search for projects  *****************************************************/
 Route::get('search', [App\Http\Controllers\web\SearchController::class, 'index'])->name('search');
 Route::post('search_result', [App\Http\Controllers\web\SearchController::class, 'search'])->name('search_result');

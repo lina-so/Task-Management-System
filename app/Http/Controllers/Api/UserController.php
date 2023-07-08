@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateUserRequest;
 
 class UserController extends Controller
 {
@@ -15,12 +16,9 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
-      return response()->json ([
-        'status_code' => 200,
-        'status' => 'success',
-        'data' => $users,
-        'message' => 'تم جلب البيانات  بنجاح!'
-    ]);
+        $massage = 'تم جلب البيانات بنجاح!';
+
+        return response()->success($users,$massage);
     }
 
     /*******************************************************************************************************************/
@@ -42,27 +40,27 @@ class UserController extends Controller
 
         $user->save();
 
+        $massage = 'تم اضافة المستخدم بنجاح!';
 
-        return response()->json ([
-            'status_code' => 200,
-            'status' => 'success',
-            'data' => $user,
-            'message' => 'تم اضافة المستخدم بنجاح!'
-        ]);
+        return response()->success($user,$massage);
+
 
     }
 
     /*******************************************************************************************************************/
     public function show(int $id)
     {
-        $user = User::findOrFail($id);
 
-        return response()->json ([
-            'status_code' => 200,
-            'status' => 'success',
-            'data' => $user,
-            'message' => 'تم جلب بيانات المستخدم بنجاح!'
-        ]);
+        try {
+            $user = User::with(['projects'])->findOrFail($id);
+        } catch(ModelNotFoundException $e) {
+            return response()->error('المستخدم المحدد غير موجود', 404);
+        }
+
+        $massage = "تم جلب بيانات المستخدم بنجاح!";
+
+        return response()->success($user,$massage);
+
     }
 
     /*******************************************************************************************************************/
@@ -73,7 +71,7 @@ class UserController extends Controller
     }
     /*******************************************************************************************************************/
 
-    public function update(UserRequest $request, int $id)
+    public function update(UpdateUserRequest $request, int $id)
     {
         $validated=$request->validated();
 
@@ -83,12 +81,10 @@ class UserController extends Controller
 
         $user->save();
 
-        return response()->json ([
-            'status_code' => 200,
-            'status' => 'success',
-            'data' => $user,
-            'message' => 'تم تعديل بيانات المستخدم بنجاح!'
-        ]);
+        $massage = 'تم تعديل بيانات المستخدم بنجاح!';
+
+        return response()->success($user,$massage);
+
     }
 
     /*******************************************************************************************************************/
@@ -96,12 +92,13 @@ class UserController extends Controller
     public function destroy($id)
     {
         $user = User::find($id);
-        $user->delete();
-        return response()->json ([
-            'status_code' => 200,
-            'status' => 'success',
-            'message' => 'تم حذف  المستخدم بنجاح!'
+        if(!$user) {
+            return response()->error('Object not found');
+        }
 
-        ]);
+        $user->delete();
+        $massage = 'تم حذف المستخدم بنجاح!';
+        return response()->success($user,$massage);
+
     }
 }

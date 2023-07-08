@@ -32,13 +32,9 @@ class SearchController extends Controller
 
                   $projects = $user->projects;
 
+                  $massage =" تم جلب جميع بيانات المشروع بنجاح";
+                  return response()->success($projects,$massage);
 
-                return response()->json ([
-                    'data'=>$projects,
-                    'status_code' => 200,
-                    'status' => 'success',
-                    'message' =>'تم جلب بيانات المشروع بنجاح!'
-                ]);
 
               }
 
@@ -53,12 +49,8 @@ class SearchController extends Controller
                 return redirect()->back()->with('error', 'project not found');
             }
 
-            return response()->json ([
-                'data'=>$projects,
-                'status_code' => 200,
-                'status' => 'success',
-                'message' =>'تم جلب بيانات المشروع بنجاح!'
-            ]);
+            $massage =" تم جلب جميع بيانات المشروع بنجاح";
+            return response()->success($projects,$massage);
 
         }
 
@@ -89,12 +81,8 @@ class SearchController extends Controller
         ->distinct()
         ->get();
 
-        return response()->json ([
-            'data'=>$projects,
-            'status_code' => 200,
-            'status' => 'success',
-            'message' =>'تم جلب بيانات المشروع بنجاح!'
-        ]);
+        $massage =" تم جلب جميع بيانات المشروع بنجاح";
+        return response()->success($projects,$massage);
 
     }
 

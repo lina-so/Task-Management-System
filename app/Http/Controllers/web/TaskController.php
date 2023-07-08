@@ -9,6 +9,7 @@ use App\Models\Project;
 use Illuminate\Http\Request;
 use App\Http\Requests\TaskRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateTaskRequest;
 
 class TaskController extends Controller
 {
@@ -70,7 +71,7 @@ class TaskController extends Controller
 
    /*************************************************************************************************/
 
-    public function update(TaskRequest $request, $id)
+    public function update(UpdateTaskRequest $request, $id)
     {
           $validated=$request->validated();
 

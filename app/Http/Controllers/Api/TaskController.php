@@ -9,6 +9,7 @@ use App\Models\Project;
 use Illuminate\Http\Request;
 use App\Http\Requests\TaskRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateTaskRequest;
 
 class TaskController extends Controller
 {
@@ -20,14 +21,10 @@ class TaskController extends Controller
         $tasks = Task::all();
         $projects = Project::all();
         $tags = Tag::all();
+        $massage ='تم جلب التاسكات  بنجاح!';
+        return response()->success($tasks,$massage);
 
 
-        return response()->json ([
-            'status_code' => 200,
-            'status' => 'success',
-            'data' => $tasks,
-            'message' => 'تم جلب االبيانات  بنجاح!'
-        ]);
     }
 
     /*************************************************************************************************/
@@ -53,28 +50,22 @@ class TaskController extends Controller
 
           $task->tags()->attach($request->tag_id);
 
+          $massage =" تم إضافة التاسك بنجاح";
 
-        return response()->json ([
-            'status_code' => 200,
-            'status' => 'success',
-            'data' => $task,
-            'message' => 'تم اضافة التاسك بنجاح!'
-        ]);
+          return response()->success($task,$massage);
+
+
     }
 
    /*************************************************************************************************/
 
     public function show($id)
     {
-        $task = Task::findOrFail($id);
+        $task = Task::findOrFail($id)->with(['project'])->first();
+        $massage ="تم جلب بيانات التاسك بنجاح!";
 
-        return response()->json ([
-            'status_code' => 200,
-            'status' => 'success',
-            'data' => $task,
-            'message' => 'تم جلب بيانات التاسك بنجاح!'
+        return response()->success($task,$massage);
 
-        ]);
     }
 
   /*************************************************************************************************/
@@ -86,7 +77,7 @@ class TaskController extends Controller
 
    /*************************************************************************************************/
 
-    public function update(TaskRequest $request, $id)
+    public function update(UpdateTaskRequest $request, $id)
     {
           $validated=$request->validated();
 
@@ -98,13 +89,10 @@ class TaskController extends Controller
           $task->save();
 
           $task->tags()->sync($request->tag_id);
+          $massage = 'تم تعديل بيانات التاسك بنجاح!';
 
-        return response()->json ([
-            'status_code' => 200,
-            'status' => 'success',
-            'data' => $task,
-            'message' => 'تم تعديل بيانات التاسك بنجاح!'
-        ]);
+          return response()->success($task,$massage);
+
     }
 
 
@@ -113,12 +101,13 @@ class TaskController extends Controller
     public function destroy($id)
     {
         $task = Task::find($id);
+        if(!$task) {
+            return response()->error('Object not found');
+        }
         $task->delete();
+        $massage = 'تم حذف  التاسك بنجاح!';
+        return response()->success($task,$massage);
 
-        return response()->json ([
-            'status_code' => 200,
-            'status' => 'success',
-            'message' => 'تم حذف  التاسك بنجاح!'
-        ]);
+
     }
 }

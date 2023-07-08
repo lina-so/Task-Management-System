@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\web;
 
+use App\Models\Tag;
+use App\Models\Task;
 use App\Models\User;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectRequest;
+use App\Http\Requests\UpdateProjectRequest;
 
 
 class ProjectController extends Controller
@@ -18,8 +21,10 @@ class ProjectController extends Controller
         // $projects = Project::all();
         $projects = Project::paginate(10);
         $users = User::all();
+        $tags = Tag::all();
 
-        return view('pages.project.index',compact('projects','users'));
+
+        return view('pages.project.index',compact('projects','users','tags'));
     }
 
     /*************************************************************************************************/
@@ -66,7 +71,7 @@ class ProjectController extends Controller
 
    /*************************************************************************************************/
 
-    public function update(ProjectRequest $request, $id)
+    public function update(UpdateProjectRequest $request, $id)
     {
           $validated=$request->validated();
 

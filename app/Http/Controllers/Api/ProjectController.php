@@ -6,6 +6,7 @@ use App\Models\Project;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectRequest;
+use App\Http\Requests\UpdateProjectRequest;
 
 class ProjectController extends Controller
 {
@@ -13,17 +14,9 @@ class ProjectController extends Controller
 
     public function index()
     {
-        // $projects=Project::all();
-        $projects = Project::paginate(10);
-
-        return response()->json ([
-            'data'=>$projects,
-            'status_code' => 200,
-            'status' => 'success',
-            'message' =>'تم جلب جميع المشاريع بنجاح!'
-        ]);
-
-
+        $projects = Project::paginate(request()->page_size);
+        $massage =" تم جلب جميع المشاريع بنجاح";
+        return response()->success($projects,$massage);
     }
 
 
@@ -43,13 +36,10 @@ class ProjectController extends Controller
 
         $project->save();
 
+        $massage =" تم إضافة المشروع بنجاح";
 
-         return response()->json([
-            'data' => $project,
-            'status_code' => 200,
-            'status' => 'success',
-            'message' => 'تم حفظ المشروع بنجاح!'
-        ]);
+        return response()->success($project,$massage);
+
 
     }
 
@@ -58,19 +48,17 @@ class ProjectController extends Controller
     public function show(int $id)
     {
         $project = Project::findOrFail($id);
-        return response()->json([
-            'data' => $project,
-            'status_code' => 200,
-            'status' => 'success',
-            'message' => 'تم جلب بيانات المشروع بنجاح!'
-        ]);
+
+        $massage =" تم جلب بيانات المشروع بنجاح!";
+
+        return response()->success($project,$massage);
 
     }
 
 
    /*************************************************************************************************/
 
-    public function update(ProjectRequest $request, int $id)
+    public function update(UpdateProjectRequest $request, int $id)
     {
              $validated=$request->validated();
 
@@ -81,13 +69,10 @@ class ProjectController extends Controller
 
              $project->save();
 
-             return response()->json([
-                'data' => $project,
-                'status_code' => 200,
-                'status' => 'success',
-                'message' => 'تم تعديل المشروع بنجاح!'
-            ]);
 
+            $massage =" تم تعديل المشروع بنجاح!";
+
+            return response()->success($project,$massage);
     }
 
 
@@ -97,12 +82,15 @@ class ProjectController extends Controller
     public function destroy(int $id)
     {
         $project = Project::find($id);
+        if(!$project) {
+            return response()->error('Object not found');
+        }
+
         $project->delete();
-        return response()->json([
-            'status_code' => 200,
-            'status' => 'success',
-            'message' => 'تم حذف المشروع بنجاح!'
-        ]);
+        $massage =" تم حذف المشروع بنجاح!";
+        return response()->success($project,$massage);
+
+
 
     }
 }
