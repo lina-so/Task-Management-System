@@ -133,11 +133,9 @@
                                                     href="{{route('project.show',$project->id)}}" title="show"><i
                                                     class="las la-eye"></i></a>
 
-                                                    <a class="modal-effect btn btn-sm btn-success" data-effect="effect-scale"  data-toggle="modal"
-                                                     href="#modaldemo4{{$project->id}}"
+                                                    <a class=" btn btn-sm btn-success"
+                                                     href="{{ route('project_tags',$project->id) }}"
                                                      title="show">add task</a>
-
-
 
 
 												</td>
@@ -224,7 +222,7 @@
 
 
                                                     <!-- Add task modal -->
-                                            <div class="modal" id="modaldemo4{{$project->id}}">
+                                            {{-- <div class="modal" id="modaldemo4{{$project->id}}">
                                                 <div class="modal-dialog" role="document">
                                                     <div class="modal-content modal-content-demo">
                                                         <div class="modal-header">
@@ -274,7 +272,7 @@
                                                             </form>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> --}}
 
 
 											@endforeach

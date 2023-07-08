@@ -88,6 +88,17 @@ class ProjectController extends Controller
 
 
     /*************************************************************************************************/
+    public function suggestProjectTags($id)
+    {
+        $project = Project::findOrFail($id);
+        $sugg_tags = $project->tasks()->with('tags')->get()->pluck('tags')->flatten()->unique();
+        $tags = Tag::all();
+
+        // $tags = $project->tags;
+        // dd($tags);
+
+        return view('pages.project.project_tags',compact('project','tags','sugg_tags'));
+    }
 
     public function destroy($id)
     {

@@ -17,7 +17,6 @@ class TaskController extends Controller
 
     public function index()
     {
-        // $projects = Project::all();
         $tasks = Task::all();
         $projects = Project::all();
         $tags = Tag::all();
@@ -46,7 +45,7 @@ class TaskController extends Controller
           $task->project_id = $request->project_id;
 
           $task->save();
-
+        // dd($request->tag_id);
           $task->tags()->attach($request->tag_id);
 
           return redirect()->route('task.index')

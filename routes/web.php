@@ -16,12 +16,13 @@ Route::get('/', function () {
 /**************************************  project  *****************************************************/
 Route::resource('project', App\Http\Controllers\web\ProjectController::class);
 
+/**************************************  get all project_tags  *****************************************************/
+Route::get('project_tags/{id}', [App\Http\Controllers\web\ProjectController::class,'suggestProjectTags'])->name('project_tags');
 /**************************************  users  *****************************************************/
 Route::resource('user', UserController::class);
 
 /**************************************  tasks  *****************************************************/
 Route::resource('task',TaskController::class);
-
 
 /**************************************  search for projects  *****************************************************/
 Route::get('search', [App\Http\Controllers\web\SearchController::class, 'index'])->name('search');
