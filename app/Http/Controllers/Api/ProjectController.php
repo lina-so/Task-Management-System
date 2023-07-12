@@ -58,14 +58,14 @@ class ProjectController extends Controller
 
    /*************************************************************************************************/
 
-    public function update(UpdateProjectRequest $request, int $id)
+    public function update(UpdateProjectRequest $request, $id)
     {
              $validated=$request->validated();
 
              $project = Project::findOrFail($id);
-             $project->name = $request->name;
-             $project->description = $request->description;
-             $project->user_id = $request->user_id;
+             $project->name = $request->name ?:$project->name;
+             $project->description = $request->description ?:$project->description;
+             $project->user_id = $request->user_id ?:$project->user_id;
 
              $project->save();
 
