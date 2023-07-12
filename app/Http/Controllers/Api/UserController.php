@@ -7,15 +7,18 @@ use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Traits\ModelQueryTrait;
+
 
 class UserController extends Controller
 {
+    use ModelQueryTrait;
 
  /*******************************************************************************************************************/
 
     public function index()
     {
-        $users = User::all();
+        $users = $this->getAll(new User);
         $massage = 'تم جلب البيانات بنجاح!';
 
         return response()->success($users,$massage);
@@ -33,12 +36,8 @@ class UserController extends Controller
     public function store(UserRequest $request)
     {
         $validated=$request->validated();
-
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-
-        $user->save();
+        $data = $request->all();
+        $user = $this->createRecord(new User(),$data);
 
         $massage = 'تم اضافة المستخدم بنجاح!';
 
@@ -52,7 +51,8 @@ class UserController extends Controller
     {
 
         try {
-            $user = User::with(['projects'])->findOrFail($id);
+            // $user = User::with(['projects'])->findOrFail($id);
+            $user = $this->getByIdWithRelation(new User(),$id,['projects']);
         } catch(ModelNotFoundException $e) {
             return response()->error('المستخدم المحدد غير موجود', 404);
         }
@@ -74,15 +74,9 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, int $id)
     {
         $validated=$request->validated();
-
-        $user = User::findOrFail($id);
-        $user->name = $request->name;
-        $user->email = $request->email;
-
-        $user->save();
+        $user = $this->updateRecord(new User(),$id,$validated);
 
         $massage = 'تم تعديل بيانات المستخدم بنجاح!';
-
         return response()->success($user,$massage);
 
     }
@@ -91,7 +85,8 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        $user = User::find($id);
+        // $user = User::find($id);
+        $user = $this->deleteRecord(new User(),$id);
         if(!$user) {
             return response()->error('Object not found');
         }

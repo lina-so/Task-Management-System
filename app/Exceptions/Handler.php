@@ -22,11 +22,36 @@ class Handler extends ExceptionHandler
     /**
      * Register the exception handling callbacks for the application.
      */
+
     public function register(): void
     {
-        $this->reportable(function (NotFoundHttpException $e) {
-            return response()->error('Object not found');
-            // return  response()->json(['message'=>'object not found'],  404);
+        $this->reportable(function (Throwable $e) {
+
         });
+    }
+    public function render($request, Throwable $exception)
+    {
+        if ($request->wantsJson()) {
+            // if ($exception instanceof AuthorizationException) {
+            //     return response()->json(['error' => true, 'status' => 403, 'meta' => []]);
+            //     //    return response()->error('user not authorization',403);
+
+            // }
+
+            // if ($exception instanceof ModelNotFoundException) {
+            //     // return response()->json(['error' => true, 'status' => 404, 'meta' => []]);
+            //     return response()->error('No query results for model [App\\Models\\Project]',404);
+            // }
+        } else {
+
+            if ($exception instanceof ModelNotFoundException) {
+                return response()->view('Exceptions.403');
+            }
+            if ($exception instanceof AuthorizationException) {
+                return response()->view('Exceptions.403');
+            }
+        }
+
+        return parent::render($request, $exception);
     }
 }

@@ -207,13 +207,13 @@
 
 										</tbody>
 									</table>
-                                    @if(count($users)>=10)
+                                    {{-- @if(count($users)>=10)
                                     <div class="pagination">
                                         {{ $users->links() }}
                                     </div>
                                     @else
                                     <div></div>
-                                    @endif
+                                    @endif --}}
 								</div>
 							</div>
 						</div>

@@ -182,12 +182,12 @@
                                                                         <div class="form-group">
                                                                             <label for="exampleInputEmaili">task name</label>
 
-                                                                            <input type="text" class="form-control" id="name" name="name" value="{{ $task->name }}" required>
+                                                                            <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $task->name) }}" >
                                                                         </div>
 
                                                                         <div class="form-group">
                                                                             <label>description : <span class="text-danger">*</span></label>
-                                                                            <textarea class="form-control" name="description" id="exampleFormControlTextarea1" rows="3" placeholder="{{ $task->description }}"></textarea>
+                                                                            <textarea class="form-control" name="description" id="exampleFormControlTextarea1" rows="3" value="{{ old('description', $task->description) }}"></textarea>
                                                                         </div>
 
                                                                         <div class="form-group">
@@ -211,16 +211,6 @@
                                                                             </div>
 
 
-                                                                        {{-- <div class="form-group">
-                                                                            <label > tags </label>
-                                                                            <select class="custom-select my-1 mr-sm-2" name="tag_id[]">
-                                                                                <option selected disabled>choose...</option>
-                                                                                @foreach($tags as $tag)
-                                                                                    <option style="tag: black" value="{{$tag->id}}">{{$tag->name}}</option>
-                                                                                @endforeach
-                                                                            </select>
-
-                                                                        </div> --}}
 
                                                                     </div>
 

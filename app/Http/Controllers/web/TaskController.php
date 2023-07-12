@@ -10,17 +10,19 @@ use Illuminate\Http\Request;
 use App\Http\Requests\TaskRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateTaskRequest;
+use App\Http\Traits\ModelQueryTrait;
 
 class TaskController extends Controller
 {
+    use ModelQueryTrait;
+
     /*************************************************************************************************/
 
     public function index()
     {
-        $tasks = Task::all();
-        $projects = Project::all();
-        $tags = Tag::all();
-
+        $tasks = $this->getAll(new Task);
+        $projects = $this->getAll(new Project);
+        $tags = $this->getAll(new Tag);
 
         return view('pages.task.index',compact('projects','tasks','tags'));
     }
@@ -36,19 +38,14 @@ class TaskController extends Controller
 
     public function store(TaskRequest $request)
     {
-          $validated=$request->validated();
+        $validated=$request->validated();
+        $data = $request->all();
+        $task = $this->createRecord(new Task(),$data);
 
-
-          $task = new Task();
-          $task->name = $request->name;
-          $task->description = $request->description;
-          $task->project_id = $request->project_id;
-
-          $task->save();
         // dd($request->tag_id);
-          $task->tags()->attach($request->tag_id);
+        $task->tags()->attach($request->tag_id);
 
-          return redirect()->route('task.index')
+        return redirect()->route('task.index')
           ->with('success_task','تم اضافة التاسك بنجاح');
     }
 
@@ -56,7 +53,9 @@ class TaskController extends Controller
 
     public function show($id)
     {
-        $task = Task::findOrFail($id);
+        // $task = Task::findOrFail($id);
+        $task = $this->getByIdWithRelation(new Task(),$id,[]);
+
         return view('pages.task.show',compact('task'));
 
     }
@@ -72,18 +71,11 @@ class TaskController extends Controller
 
     public function update(UpdateTaskRequest $request, $id)
     {
-          $validated=$request->validated();
+        $validated=$request->validated();
+        $task = $this->updateRecord(new Task(),$id,$validated);
+        $task->tags()->sync($request->tag_id);
 
-          $task = Task::findOrFail($id);
-          $task->name = $request->name;
-          $task->description = $request->description;
-          $task->project_id = $request->project_id;
-
-          $task->save();
-
-          $task->tags()->sync($request->tag_id);
-
-          return redirect()->route('task.index')
+        return redirect()->route('task.index')
           ->with('update_task','تم تعديل معلومات التاسك بنجاح');
     }
 
@@ -92,7 +84,7 @@ class TaskController extends Controller
 
     public function destroy($id)
     {
-        $task = Task::find($id);
+        $task = $this->deleteRecord(new Task(),$id);
         $task->delete();
         return redirect()->route('task.index')
         ->with('delete_task','تم حذف التاسك بنجاح');

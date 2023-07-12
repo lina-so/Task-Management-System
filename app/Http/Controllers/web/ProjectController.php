@@ -10,19 +10,24 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
+use App\Http\Traits\ModelQueryTrait;
 
 
 class ProjectController extends Controller
 {
+    use ModelQueryTrait;
+
     /*************************************************************************************************/
 
     public function index()
     {
-        // $projects = Project::all();
-        $projects = Project::paginate(10);
-        $users = User::all();
-        $tags = Tag::all();
+        // $projects = Project::paginate(10);
+        // $users = User::all();
+        // $tags = Tag::all();
 
+        $projects = $this->getAllWithPaginate(new Project);
+        $users = $this->getAll(new User);
+        $tags = $this->getAll(new Tag);
 
         return view('pages.project.index',compact('projects','users','tags'));
     }
@@ -38,15 +43,17 @@ class ProjectController extends Controller
 
     public function store(ProjectRequest $request)
     {
-          $validated=$request->validated();
+        $validated=$request->validated();
 
+        $data = $request->all();
+        $project = $this->createRecord(new Project(),$data);
 
-          $project = new Project();
-          $project->name = $request->name;
-          $project->description = $request->description;
-          $project->user_id = $request->user_id;
+        //   $project = new Project();
+        //   $project->name = $request->name;
+        //   $project->description = $request->description;
+        //   $project->user_id = $request->user_id;
 
-          $project->save();
+        //   $project->save();
 
 
         return redirect()->route('project.index')
@@ -57,7 +64,8 @@ class ProjectController extends Controller
 
     public function show($id)
     {
-        $project = Project::findOrFail($id);
+        // $project = Project::findOrFail($id);
+        $project = $this->getByIdWithRelation(new Project(),$id,[]);
         return view('pages.project.show',compact('project'));
 
     }
@@ -73,16 +81,18 @@ class ProjectController extends Controller
 
     public function update(UpdateProjectRequest $request, $id)
     {
-          $validated=$request->validated();
+        $validated=$request->validated();
 
-          $project = Project::findOrFail($id);
-          $project->name = $request->name;
-          $project->description = $request->description;
-          $project->user_id = $request->user_id;
+        //   $project = Project::findOrFail($id);
+        //   $project->name = $request->name;
+        //   $project->description = $request->description;
+        //   $project->user_id = $request->user_id;
 
-          $project->save();
+        //   $project->save();
 
-          return redirect()->route('project.index')
+        $project = $this->updateRecord(new Project(),$id,$validated);
+
+        return redirect()->route('project.index')
           ->with('update','تم تعديل معلومات المشروع بنجاح');
     }
 
@@ -102,7 +112,8 @@ class ProjectController extends Controller
 
     public function destroy($id)
     {
-        $project = Project::find($id);
+        $project = $this->deleteRecord(new Project(),$id);
+
         $project->delete();
         return redirect()->route('project.index')
         ->with('delete','تم حذف المشروع بنجاح');

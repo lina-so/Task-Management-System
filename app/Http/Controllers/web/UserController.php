@@ -7,15 +7,16 @@ use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Traits\ModelQueryTrait;
 
 class UserController extends Controller
 {
-
+    use ModelQueryTrait;
  /*******************************************************************************************************************/
 
     public function index()
     {
-        $users = User::all();
+        $users = $this->getAll(new User);
         return view('pages.user.index',compact('users'));
     }
 
@@ -32,11 +33,8 @@ class UserController extends Controller
     {
         $validated=$request->validated();
 
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-
-        $user->save();
+        $data = $request->all();
+        $user = $this->createRecord(new User(),$data);
 
         return redirect()->route('user.index')
           ->with('success_user','تم حفظ معلومات المستخدم بنجاح');
@@ -47,7 +45,9 @@ class UserController extends Controller
     /*******************************************************************************************************************/
     public function show(int $id)
     {
-        $user = User::findOrFail($id);
+        // $user = User::findOrFail($id);
+        $user = $this->getByIdWithRelation(new User(),$id,[]);
+
         return view('pages.user.show',compact('user'));
     }
 
@@ -62,12 +62,8 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, int $id)
     {
         $validated=$request->validated();
+        $user = $this->updateRecord(new User(),$id,$validated);
 
-        $user = User::findOrFail($id);
-        $user->name = $request->name;
-        $user->email = $request->email;
-
-        $user->save();
 
         return redirect()->route('user.index')
         ->with('update_user','تم تعديل معلومات المستخدم بنجاح');
@@ -77,7 +73,9 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        $user = User::find($id);
+        // $user = User::find($id);
+
+        $user = $this->deleteRecord(new User(),$id);
         $user->delete();
         return redirect()->route('user.index')
         ->with('delete_user','تم حذف المستخدم بنجاح');

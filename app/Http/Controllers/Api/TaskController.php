@@ -10,17 +10,20 @@ use Illuminate\Http\Request;
 use App\Http\Requests\TaskRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateTaskRequest;
+use App\Http\Traits\ModelQueryTrait;
+
 
 class TaskController extends Controller
 {
+    use ModelQueryTrait;
+
     /*************************************************************************************************/
 
     public function index()
     {
-        // $projects = Project::all();
-        $tasks = Task::all();
-        $projects = Project::all();
-        $tags = Tag::all();
+        $tasks = $this->getAll(new Task);
+        $projects = $this->getAll(new Project);
+        $tags = $this->getAll(new Tag);
         $massage ='تم جلب التاسكات  بنجاح!';
         return response()->success($tasks,$massage);
 
@@ -38,21 +41,15 @@ class TaskController extends Controller
 
     public function store(TaskRequest $request)
     {
-          $validated=$request->validated();
+        $validated=$request->validated();
 
+        $data = $request->all();
+        $task = $this->createRecord(new Task(),$data);
 
-          $task = new Task();
-          $task->name = $request->name;
-          $task->description = $request->description;
-          $task->project_id = $request->project_id;
+        $task->tags()->attach($request->tag_id);
 
-          $task->save();
-
-          $task->tags()->attach($request->tag_id);
-
-          $massage =" تم إضافة التاسك بنجاح";
-
-          return response()->success($task,$massage);
+        $massage =" تم إضافة التاسك بنجاح";
+        return response()->success($task,$massage);
 
 
     }
@@ -61,7 +58,9 @@ class TaskController extends Controller
 
     public function show($id)
     {
-        $task = Task::findOrFail($id)->with(['project'])->first();
+        // $task = Task::findOrFail($id)->with(['project'])->first();
+        $task = $this->getByIdWithRelation(new Task(),$id,['project']);
+
         $massage ="تم جلب بيانات التاسك بنجاح!";
 
         return response()->success($task,$massage);
@@ -79,19 +78,13 @@ class TaskController extends Controller
 
     public function update(UpdateTaskRequest $request, $id)
     {
-          $validated=$request->validated();
+        $validated=$request->validated();
+        $task = $this->updateRecord(new Task(),$id,$validated);
 
-          $task = Task::findOrFail($id);
-          $task->name = $request->name;
-          $task->description = $request->description;
-          $task->project_id = $request->project_id;
+        $task->tags()->sync($request->tag_id);
+        $massage = 'تم تعديل بيانات التاسك بنجاح!';
 
-          $task->save();
-
-          $task->tags()->sync($request->tag_id);
-          $massage = 'تم تعديل بيانات التاسك بنجاح!';
-
-          return response()->success($task,$massage);
+        return response()->success($task,$massage);
 
     }
 
@@ -100,7 +93,8 @@ class TaskController extends Controller
 
     public function destroy($id)
     {
-        $task = Task::find($id);
+        $task = $this->deleteRecord(new Task(),$id);
+
         if(!$task) {
             return response()->error('Object not found');
         }

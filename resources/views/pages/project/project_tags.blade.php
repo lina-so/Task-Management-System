@@ -80,55 +80,7 @@
                             </form>
                         </div>
 
-                        {{-- <div class="modal-dialog" role="document">
-                            <div class="modal-content modal-content-demo">
-                                <div class="modal-header">
-                                    <h6 class="modal-title"> Add task</h6><button aria-label="Close" class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
-                                </div>
-                                    <form action="{{route('task.store')}}" method="post">
-                                        {{csrf_field()}}
 
-                                        <div class="modal-body">
-                                            <div class="form-group">
-                                                <label for="exampleInputEmaili">task name</label>
-
-                                                <input type="text" class="form-control" id="name" name="name" required>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label>description : <span class="text-danger">*</span></label>
-                                                <textarea class="form-control" name="description" id="exampleFormControlTextarea1" rows="3"></textarea>
-                                            </div>
-
-
-                                            <div class="form-group">
-                                                <label > project</label>
-                                                <select class="custom-select my-1 mr-sm-2" name="project_id">
-                                                        <option selected style="color: black" value="{{$project->id}}">{{$project->name}}</option>
-                                                </select>
-
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label > tags</label>
-                                                <select data-placeholder="select tags" multiple class="custom-select my-1 mr-sm-2" name="tag_id[]">
-                                                    <option selected disabled>choose...</option>
-                                                    @foreach($tags as $tag)
-                                                        <option style="tag: black" value="{{$tag->id}}">{{$tag->name}}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-
-                                        </div>
-
-
-                                        <div class="modal-footer">
-                                            <button class="btn  btn-primary" type="submit">save</button>
-                                            <button class="btn  btn-secondary" data-dismiss="modal" type="button">cancel</button>
-                                        </div>
-                                    </form>
-                            </div>
-                        </div> --}}
                     </div>
 				<!-- row closed -->
 			</div>
