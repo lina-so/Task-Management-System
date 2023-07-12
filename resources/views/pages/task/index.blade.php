@@ -187,7 +187,7 @@
 
                                                                         <div class="form-group">
                                                                             <label>description : <span class="text-danger">*</span></label>
-                                                                            <textarea class="form-control" name="description" id="exampleFormControlTextarea1" rows="3" value="{{ old('description', $task->description) }}"></textarea>
+                                                                            <textarea class="form-control" name="description" id="exampleFormControlTextarea1" rows="3" >{{ old('description', $task->description) }}</textarea>
                                                                         </div>
 
                                                                         <div class="form-group">

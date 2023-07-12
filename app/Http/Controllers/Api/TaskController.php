@@ -79,7 +79,8 @@ class TaskController extends Controller
     public function update(UpdateTaskRequest $request, $id)
     {
         $validated=$request->validated();
-        $task = $this->updateRecord(new Task(),$id,$validated);
+        $data = $request->all();
+        $task = $this->updateRecord(new Task(),$id,$data);
 
         $task->tags()->sync($request->tag_id);
         $massage = 'تم تعديل بيانات التاسك بنجاح!';
